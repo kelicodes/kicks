@@ -1,0 +1,31 @@
+import mongoose from "mongoose";
+
+const cartSchema = new mongoose.Schema(
+  {
+    userId: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: "User", 
+      required: true 
+    },
+    items: [
+      {
+        productId: { 
+          type: mongoose.Schema.Types.ObjectId, 
+          ref: "productmodel", 
+          required: true 
+        },
+        size: { 
+          type: Number, // the shoe size the user selects
+          required: true 
+        },
+        quantity: { 
+          type: Number, 
+          default: 1 
+        },
+      },
+    ],
+  },
+  { timestamps: true } // automatically adds createdAt and updatedAt
+);
+
+export default mongoose.model("Cart", cartSchema);
