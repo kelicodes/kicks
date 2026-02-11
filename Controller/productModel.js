@@ -4,13 +4,13 @@ import fs from "fs";
 
 export const productUpload = async (req, res) => {
   try {
-    const { name, price, category, desc, sizes } = req.body;
+    const { name, price, category, desc, sizes, brand } = req.body;
 
     // Validate required fields
-    if (!name || !price || !category || !desc || !sizes) {
+    if (!name || !price || !category || !desc || !sizes || !brand) {
       return res.status(400).json({
         success: false,
-        message: "All fields including sizes are required",
+        message: "All fields including sizes and brand are required",
       });
     }
 
@@ -69,11 +69,12 @@ export const productUpload = async (req, res) => {
       });
     }
 
-    // Save product
+    // Save product with brand
     const newProduct = new Product({
       name,
       price,
       category,
+      brand,       // <-- Added brand here
       desc,
       images: uploadedImages,
       sizes: parsedSizes,
@@ -95,6 +96,7 @@ export const productUpload = async (req, res) => {
     });
   }
 };
+
 
 
 
