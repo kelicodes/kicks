@@ -1,4 +1,4 @@
-import { productUpload,fecthAll,fetchone,Deleteproduct } from "../Controller/productModel";
+import { productUpload,fecthAll,fetchone,Deleteproduct } from "../Controller/productModel.js";
 import upload from "../Middleware/multer.js";
 import express from "express"
 
@@ -19,7 +19,7 @@ productRouter.post(
 );
 
 productRouter.get("/all",fecthAll)
-productRouter.delete("/delete",Deleteproduct)
+productRouter.delete("/delete/:id",Deleteproduct)
 productRouter.get('/product/:id', fetchone)
 
 export default productRouter

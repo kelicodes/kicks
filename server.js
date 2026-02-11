@@ -5,6 +5,7 @@ import DB from "./Config/db.js"
 import "dotenv/config"
 import userRouter from "./Routes/userRouter.js"
 import cartRouter from "./Routes/cartRoutes.js"
+import productRouter from "./Routes/productRoute.js"
 
 
 
@@ -17,6 +18,7 @@ app.use(cookieParser())
 
 app.use("/user",userRouter)
 app.use("/cart",cartRouter)
+app.use("/product",productRouter)
 
 app.get("/",(req,res)=>{
     res.send("api is running")

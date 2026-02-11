@@ -130,7 +130,7 @@ export const fetchone=async(req,res)=>{
 
 export const Deleteproduct=async(req,res)=>{
     try {
-        const {id}= req.body
+        const {id}= req.params
         await Product.findByIdAndDelete({id})
         return res.json({success:true,message:"product deleted"})
 
