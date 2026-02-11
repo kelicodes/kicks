@@ -6,6 +6,8 @@ import fs from "fs";
 export const productUpload = async (req, res) => {
   try {
     const { name, price, category, desc, sizes, brand } = req.body;
+    console.log("REQ.BODY:", req.body);
+  console.log("REQ.FILES:", req.files);
 
     if (!name || !price || !category || !desc || !sizes || !brand) {
       return res.status(400).json({
