@@ -19,6 +19,7 @@ app.use(cookieParser())
 app.use(cors({
   origin: [
     "http://localhost:5173",
+    "https://adminkick.vercel.app",
     "https://kicks-ekpr.onrender.com" // optional (production frontend)
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
