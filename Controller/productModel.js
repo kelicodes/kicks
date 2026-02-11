@@ -6,7 +6,7 @@ export const productUpload = async (req, res) => {
   try {
     const { name, price, category, desc, sizes } = req.body;
 
-    // 🔐 Basic validation
+    // Validate required fields
     if (!name || !price || !category || !desc || !sizes) {
       return res.status(400).json({
         success: false,
@@ -14,7 +14,7 @@ export const productUpload = async (req, res) => {
       });
     }
 
-    // 🧠 Parse sizes (comes as string if using FormData)
+    // Parse sizes
     let parsedSizes;
     try {
       parsedSizes = typeof sizes === "string" ? JSON.parse(sizes) : sizes;
@@ -32,7 +32,7 @@ export const productUpload = async (req, res) => {
       });
     }
 
-    // Optional: validate each size object
+    // Validate each size object
     for (const s of parsedSizes) {
       if (!s.size || s.stock === undefined) {
         return res.status(400).json({
@@ -44,7 +44,7 @@ export const productUpload = async (req, res) => {
 
     const uploadedImages = [];
 
-    // 📤 Upload images to Cloudinary
+    // Upload images to Cloudinary
     for (const key of ["image1", "image2", "image3", "image4"]) {
       if (req.files?.[key]?.[0]) {
         const filePath = req.files[key][0].path;
@@ -55,8 +55,10 @@ export const productUpload = async (req, res) => {
 
         uploadedImages.push(result.secure_url);
 
-        // 🧹 Remove temp file
-        fs.unlinkSync(filePath);
+        // Remove temp file if exists
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
       }
     }
 
@@ -67,7 +69,7 @@ export const productUpload = async (req, res) => {
       });
     }
 
-    // 🧾 Create product
+    // Save product
     const newProduct = new Product({
       name,
       price,
@@ -96,9 +98,10 @@ export const productUpload = async (req, res) => {
 
 
 
+
 export const fecthAll=async(req,res)=>{
     try {
-        const allproducts= await Product.findAll()
+        const allproducts= await Product.find()
         return res.json({success:true,message:"product fetched", allproducts})
     } catch (error) {
          console.error(error);

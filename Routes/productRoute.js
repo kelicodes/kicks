@@ -1,5 +1,5 @@
 import { productUpload,fecthAll,fetchone,Deleteproduct } from "../Controller/productModel.js";
-import upload from "../Middleware/multer.js";
+import upload from "../Middleware/upload.js";
 import express from "express"
 
 const productRouter = express.Router();
