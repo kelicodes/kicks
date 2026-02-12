@@ -1,40 +1,72 @@
 import Cart from "../Models/cartModel.js";
 import mongoose from "mongoose";
 
-// -------------------- Add to Cart --------------------
+
+
 export const addToCart = async (req, res) => {
   try {
     const { productId, size, quantity } = req.body;
-    const userId = req.userId; // <- from authMiddleware
+    const userId = req.userId; // from authMiddleware
 
     if (!productId || !size) {
-      return res.status(400).json({ success: false, message: "Product and size are required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Product and size are required" });
     }
 
+    // Find the user's cart
     let cart = await Cart.findOne({ userId });
 
     if (!cart) {
+      // No cart yet, create new
       cart = new Cart({
         userId,
         items: [{ productId, size, quantity: quantity || 1 }],
       });
     } else {
-      const itemIndex = cart.items.findIndex(
-        (item) => item.productId.toString() === productId && item.size === size
+      // Check for existing items with same productId + size
+      const existingIndex = cart.items.findIndex(
+        (item) =>
+          item.productId.toString() === productId && item.size === size
       );
 
-      if (itemIndex > -1) {
-        cart.items[itemIndex].quantity += quantity || 1;
+      if (existingIndex > -1) {
+        // Merge duplicates: add the quantity
+        cart.items[existingIndex].quantity += quantity || 1;
       } else {
+        // Add new item
         cart.items.push({ productId, size, quantity: quantity || 1 });
       }
+
+      // Optional: clean any accidental duplicates already in the database
+      const uniqueItemsMap = new Map();
+      cart.items.forEach((item) => {
+        const key = `${item.productId.toString()}-${item.size}`;
+        if (uniqueItemsMap.has(key)) {
+          // merge quantity if duplicate
+          uniqueItemsMap.get(key).quantity += item.quantity;
+        } else {
+          uniqueItemsMap.set(key, item);
+        }
+      });
+
+      cart.items = Array.from(uniqueItemsMap.values());
     }
 
     await cart.save();
-    return res.status(200).json({ success: true, message: "Product added to cart", cart });
+
+    return res.status(200).json({
+      success: true,
+      message: "Product added to cart",
+      cart,
+    });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ success: false, message: "Failed to add to cart", error: error.message });
+    return res.status(500).json({
+      success: false,
+      message: "Failed to add to cart",
+      error: error.message,
+    });
   }
 };
 
