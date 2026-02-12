@@ -6,7 +6,7 @@ import JWT from "jsonwebtoken";
 export const userReg=async(req,res)=>{
 
     try {
-        const {name,email,password}=req.body()
+        const {name,email,password}=req.body
         if(!name || !email || password){
             return res.status().json({success:false,message:"all fileds are required."} )
         }
