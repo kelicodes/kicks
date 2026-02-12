@@ -7,8 +7,8 @@ export const userReg=async(req,res)=>{
 
     try {
         const {name,email,password}=req.body
-        if(!name || !email || password){
-            return res.status().json({success:false,message:"all fileds are required."} )
+        if(!name || !email || !password){
+            return res.status(400).json({success:false,message:"all fileds are required."} )
         }
 
         const salt=await bcrypt.genSalt(10)
@@ -26,11 +26,11 @@ export const userReg=async(req,res)=>{
             password:passwordbcrpt
         })
 
-        await newuser.save
+        await newuser.save()
         const token = JWT.sign({ id: newuser._id }, process.env.SECRETWORD, { expiresIn: "1d" });
 
 
-        return res.status(200).json({success:true,user,token,message:"user saved successfully"})
+        return res.status(200).json({success:true,user:newuser,token,message:"user saved successfully"})
 
 
     } catch (error) {
